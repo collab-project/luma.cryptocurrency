@@ -1,6 +1,6 @@
 # .coveragerc to control coverage.py
 [run]
-source = luma.cryptocurrency
+source = luma/cryptocurrency
 omit =
     setup.py
     .tox/*
