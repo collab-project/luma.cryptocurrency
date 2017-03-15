@@ -10,4 +10,5 @@ from luma.cryptocurrency import endpoint
 class EndpointTestCase(unittest.TestCase):
 
     def test_get_bpi(self):
-        endpoint.get_bpi()
+        f = endpoint.get_bpi()
+        self.assertNotEqual(f, 'foo')
