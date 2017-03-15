@@ -39,6 +39,9 @@ setup(
         'qa': [
             'rstcheck',
             'flake8'
+        ],
+        'test': [
+            'coverage>=4.0'
         ]
     },
     zip_safe=False,
