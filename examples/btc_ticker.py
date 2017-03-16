@@ -17,6 +17,8 @@ from luma.cryptocurrency.endpoint import BPI
 
 
 def get_font(fname):
+    """
+    """
     return os.path.abspath(os.path.join(
         os.path.dirname(__file__), 'fonts', fname
     ))

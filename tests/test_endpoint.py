@@ -11,23 +11,41 @@ from luma.cryptocurrency import endpoint
 from .helpers import get_reference_json
 
 
-class EndpointTestCase(unittest.TestCase):
+class EndpointTest(object):
+    def setUp(self):
+        self.ep = self.endpointClass()
 
     @requests_mock.Mocker()
     def assert_endpoint(self, ep, m):
         m.register_uri('GET', ep.url, json=self.reference, status_code=200)
         result = ep.load()
+
         self.assertEqual(result, self.reference)
 
-    def test_load_bpi(self):
-        self.reference = get_reference_json('bpi/v1/currentprice/bitcoin/USD.json')
-        ep = endpoint.BPI()
-        ep.currency = 'USD'
+    def test_load(self):
+        self.reference = get_reference_json(self.ref_json)
+        self.assert_endpoint(self.ep)
 
-        self.assert_endpoint(ep)
+    def test_supported_currencies(self):
+        currencies = self.ep.get_supported_currencies()
 
-    def test_load_coinmarketcap(self):
-        self.reference = get_reference_json('coinmarketcap/v1/currentprice/bitcoin/USD.json')
-        ep = endpoint.Coinmarketcap()
+        self.assertTrue(len(currencies) > 0)
+        self.assertEqual(self.ep.currency_country, "United States Dollar")
 
-        self.assert_endpoint(ep)
+    def test_unsupported_currency(self):
+        currency = 'foo'
+        with self.assertRaises(ValueError) as cm:
+            self.endpointClass(currency=currency)
+
+        self.assertEqual(str(cm.exception),
+            'currency not supported: {}'.format(currency))
+
+
+class BPITestCase(EndpointTest, unittest.TestCase):
+    endpointClass = endpoint.BPI
+    ref_json = 'bpi/v1/currentprice/bitcoin/USD.json'
+
+
+class CoinmarketcapTestCase(EndpointTest, unittest.TestCase):
+    endpointClass = endpoint.Coinmarketcap
+    ref_json = 'coinmarketcap/v1/currentprice/bitcoin/USD.json'
