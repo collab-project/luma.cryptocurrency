@@ -8,7 +8,7 @@ import requests
 
 
 def get_json(url):
-    r = requests.get()
+    r = requests.get(url)
     result = r.json()
 
     return result
