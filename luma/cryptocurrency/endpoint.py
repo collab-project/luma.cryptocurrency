@@ -7,15 +7,18 @@ import time
 import requests
 
 
-def get_bpi():
-    r = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+def get_json(url):
+    r = requests.get()
     result = r.json()
 
     return result
 
 
-def format_bpi(data):
+def get_bpi():
+    return get_json('https://api.coindesk.com/v1/bpi/currentprice.json')
 
+
+def format_bpi(data):
     bpi = data.get('bpi')
     timestamp = data.get('time').get('updated')
 
@@ -33,11 +36,7 @@ def format_bpi(data):
 
 
 def get_marketcap():
-    url = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'
-    r = requests.get(url)
-    result = r.json()
-
-    return result
+    return get_json('https://api.coinmarketcap.com/v1/ticker/bitcoin/')
 
 
 def format_marketcap(data):
