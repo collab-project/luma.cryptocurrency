@@ -20,7 +20,7 @@ class EndpointTestCase(unittest.TestCase):
         self.assertEqual(result, self.reference)
 
     def test_load_bpi(self):
-        self.reference = get_reference_json('bpi/currentprice/USD.json')
+        self.reference = get_reference_json('bpi/currentprice/bitcoin/USD.json')
         ep = endpoint.BPI()
         ep.currency = 'USD'
 
@@ -28,7 +28,7 @@ class EndpointTestCase(unittest.TestCase):
 
     def test_load_coinmarketcap(self):
         self.maxDiff = None
-        self.reference = get_reference_json('coinmarketcap/coinmarketcap.json')
+        self.reference = get_reference_json('coinmarketcap/currentprice/bitcoin/USD.json')
         ep = endpoint.Coinmarketcap()
 
         self.assert_endpoint(ep)
