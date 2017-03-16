@@ -13,7 +13,7 @@ from luma.core.render import canvas
 from luma.oled.device import sh1106
 
 from luma.cryptocurrency.interval import Interval
-from luma.cryptocurrency.endpoint import get_bpi, format_bpi
+from luma.cryptocurrency.endpoint import BPI
 
 
 def draw(eur, usd, timestamp):
@@ -47,17 +47,12 @@ if __name__ == "__main__":
             print("elapsed: {:0.3f} seconds".format(elapsed))
 
         # BPI
-        data_source = get_bpi
-        data_format = format_bpi
+        ep = BPI()
 
-        # marketcap
-        # data_source = get_marketcap
-        # data_format = format_marketcap
+        result = ep.load()
+        eur, usd, timestamp = ep.format(result)
 
-        data = data_source()
-        eur, usd, timestamp = data_format(data)
-
-        pprint.pprint(data)
+        pprint.pprint(result)
         print("-" * 20)
 
         draw(eur, usd, timestamp)
