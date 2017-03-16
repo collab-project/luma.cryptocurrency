@@ -9,6 +9,7 @@ import requests_cache
 
 
 class Endpoint(object):
+    api_version = 'v1'
     currency = 'USD'
 
     def get_json(self, url):
@@ -24,10 +25,11 @@ class Endpoint(object):
 class BPI(Endpoint):
     @property
     def url(self):
-        base = 'https://api.coindesk.com/v1/bpi/currentprice/{currency}.json'
+        base = 'https://api.coindesk.com/{api_version}/bpi/currentprice/{currency}.json'
 
         return base.format(
-            currency=self.currency
+            currency=self.currency,
+            api_version=self.api_version
         )
 
     def format(self, data):
@@ -46,7 +48,11 @@ class BPI(Endpoint):
 class Coinmarketcap(Endpoint):
     @property
     def url(self):
-        return 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'
+        base = 'https://api.coinmarketcap.com/{api_version}/ticker/bitcoin/'
+
+        return base.format(
+            api_version=self.api_version
+        )
 
     def format(self, data):
         record = data[0]
