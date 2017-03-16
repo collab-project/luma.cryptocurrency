@@ -1,0 +1,58 @@
+[
+	{
+		"currency": "AUD",
+		"country": "Australian Dollar"
+	},
+	{
+		"currency": "BRL",
+		"country": "Brazilian Real"
+	},
+	{
+		"currency": "CAD",
+		"country": "Canadian Dollar"
+	},
+	{
+		"currency": "CHF",
+		"country": "Swiss Franc"
+	},
+	{
+		"currency": "CNY",
+		"country": "Chinese Yuan"
+	},
+	{
+		"currency": "EUR",
+		"country": "Euro"
+	},
+	{
+		"currency": "GBP",
+		"country": "British Pound Sterling"
+	},
+	{
+		"currency": "HKD",
+		"country": "Hong Kong Dollar"
+	},
+	{
+		"currency": "IDR",
+		"country": "Indonesian Rupiah"
+	},
+	{
+		"currency": "INR",
+		"country": "Indian Rupee"
+	},
+	{
+		"currency": "JPY",
+		"country": "Japanese Yen"
+	},
+	{
+		"currency": "KRW",
+		"country": "South Korean Won"
+	},
+	{
+		"currency": "MXN",
+		"country": "Mexican Peso"
+	},
+	{
+		"currency": "RUB",
+		"country": "Russian Ruble"
+	}
+]

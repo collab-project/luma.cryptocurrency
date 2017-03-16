@@ -13,12 +13,18 @@ from luma.core.render import canvas
 from luma.oled.device import sh1106
 
 from luma.cryptocurrency.interval import Interval
-from luma.cryptocurrency.endpoint import get_bpi, format_bpi
+from luma.cryptocurrency.endpoint import BPI
 
 
-def draw(eur, usd, timestamp):
+def get_font(fname):
+    return os.path.abspath(os.path.join(
+        os.path.dirname(__file__), 'fonts', fname
+    ))
+
+
+def draw(usd, timestamp):
     # font
-    font_path = os.path.join('fonts', 'red-alert.ttf')
+    font_path = get_font('red-alert.ttf')
 
     default_font = ImageFont.truetype(font_path, 12)
     currency_font = ImageFont.truetype(font_path, 17)
@@ -27,7 +33,6 @@ def draw(eur, usd, timestamp):
     with canvas(device) as draw:
         draw.text((0, 0), timestamp, font=default_font, fill="white")
         draw.text((0, 16), usd, font=currency_font, fill="white")
-        draw.text((0, 38), eur, font=currency_font, fill="white")
 
 
 if __name__ == "__main__":
@@ -47,20 +52,15 @@ if __name__ == "__main__":
             print("elapsed: {:0.3f} seconds".format(elapsed))
 
         # BPI
-        data_source = get_bpi
-        data_format = format_bpi
+        ep = BPI()
 
-        # marketcap
-        # data_source = get_marketcap
-        # data_format = format_marketcap
+        result = ep.load()
+        usd, timestamp = ep.format(result)
 
-        data = data_source()
-        eur, usd, timestamp = data_format(data)
-
-        pprint.pprint(data)
+        pprint.pprint(result)
         print("-" * 20)
 
-        draw(eur, usd, timestamp)
+        draw(usd, timestamp)
 
     clock()
 

@@ -4,11 +4,30 @@
 
 import unittest
 
+import requests_mock
+
 from luma.cryptocurrency import endpoint
+
+from .helpers import get_reference_json
 
 
 class EndpointTestCase(unittest.TestCase):
 
-    def test_get_bpi(self):
-        f = endpoint.get_bpi()
-        self.assertNotEqual(f, 'foo')
+    @requests_mock.Mocker()
+    def assert_endpoint(self, ep, m):
+        m.register_uri('GET', ep.url, json=self.reference, status_code=200)
+        result = ep.load()
+        self.assertEqual(result, self.reference)
+
+    def test_load_bpi(self):
+        self.reference = get_reference_json('bpi/v1/currentprice/bitcoin/USD.json')
+        ep = endpoint.BPI()
+        ep.currency = 'USD'
+
+        self.assert_endpoint(ep)
+
+    def test_load_coinmarketcap(self):
+        self.reference = get_reference_json('coinmarketcap/v1/currentprice/bitcoin/USD.json')
+        ep = endpoint.Coinmarketcap()
+
+        self.assert_endpoint(ep)

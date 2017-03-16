@@ -5,43 +5,59 @@
 import time
 
 import requests
+import requests_cache
 
 
-def get_json(url):
-    r = requests.get(url)
-    result = r.json()
+class Endpoint(object):
+    api_version = 'v1'
+    currency = 'USD'
 
-    return result
+    def get_json(self, url):
+        with requests_cache.disabled():
+            response = requests.get(url)
+        result = response.json()
+        return result
 
-
-def get_bpi():
-    return get_json('https://api.coindesk.com/v1/bpi/currentprice.json')
-
-
-def format_bpi(data):
-    bpi = data.get('bpi')
-    timestamp = data.get('time').get('updated')
-
-    # format
-    eur = '{} {}'.format(
-        bpi.get('EUR').get('code'),
-        bpi.get('EUR').get('rate')
-    )
-    usd = '{} {}'.format(
-        bpi.get('USD').get('code'),
-        bpi.get('USD').get('rate')
-    )
-
-    return eur, usd, timestamp
+    def load(self):
+        return self.get_json(self.url)
 
 
-def get_marketcap():
-    return get_json('https://api.coinmarketcap.com/v1/ticker/bitcoin/')
+class BPI(Endpoint):
+    @property
+    def url(self):
+        base = 'https://api.coindesk.com/{api_version}/bpi/currentprice/{currency}.json'
+
+        return base.format(
+            currency=self.currency,
+            api_version=self.api_version
+        )
+
+    def format(self, data):
+        record = data.get('bpi')
+        timestamp = data.get('time').get('updated')
+
+        # format
+        usd = '{} {}'.format(
+            record.get('USD').get('code'),
+            record.get('USD').get('rate')
+        )
+
+        return usd, timestamp
 
 
-def format_marketcap(data):
-    record = data[0]
-    usd = 'USD {}'.format(record.get('price_usd'))
-    timestamp = time.gmtime(int(record.get('last_updated')))
+class Coinmarketcap(Endpoint):
+    @property
+    def url(self):
+        base = 'https://api.coinmarketcap.com/{api_version}/ticker/bitcoin/'
 
-    return usd, usd, time.strftime('%m/%d/%Y %H:%M:%S', timestamp)
+        return base.format(
+            api_version=self.api_version
+        )
+
+    def format(self, data):
+        record = data[0]
+        usd = 'USD {}'.format(record.get('price_usd'))
+        timestamp = time.strftime('%m/%d/%Y %H:%M:%S',
+            time.gmtime(int(record.get('last_updated'))))
+
+        return usd, timestamp
