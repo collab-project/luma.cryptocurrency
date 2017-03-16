@@ -23,6 +23,11 @@ class Endpoint(object):
 
 
 class BPI(Endpoint):
+    """
+    Endpoint for coindesk.com
+
+    :see: https://www.coindesk.com/api/
+    """
     @property
     def url(self):
         base = 'https://api.coindesk.com/{api_version}/bpi/currentprice/{currency}.json'
@@ -46,6 +51,11 @@ class BPI(Endpoint):
 
 
 class Coinmarketcap(Endpoint):
+    """
+    Endpoint for coinmarketcap.com
+
+    :see: https://coinmarketcap.com/api/
+    """
     @property
     def url(self):
         base = 'https://api.coinmarketcap.com/{api_version}/ticker/bitcoin/'
