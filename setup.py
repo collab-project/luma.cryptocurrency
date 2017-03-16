@@ -26,12 +26,12 @@ setup(
     keywords="raspberry rpi oled lcd led display screen spi i2c bitcoin btc cryptocurrency currency",
     url="https://github.com/collab-project/luma.cryptocurrency",
     download_url="https://github.com/collab-project/luma.cryptocurrency/tarball/" + version,
-    install_requires=[
-        "luma.oled",
-        "requests"
-    ],
     namespace_packages=['luma'],
     packages=['luma.cryptocurrency'],
+    install_requires=[
+        'luma.oled',
+        'requests'
+    ],
     extras_require={
         'docs': [
             'sphinx >= 1.5.1'
@@ -41,6 +41,7 @@ setup(
             'flake8'
         ],
         'test': [
+            'requests-mock',
             'coverage>=4.0'
         ]
     },
