@@ -8,6 +8,8 @@ import requests
 
 
 class Endpoint(object):
+    currency = 'USD'
+
     def get_json(self, url):
         response = requests.get(url)
         result = response.json()
@@ -18,27 +20,31 @@ class Endpoint(object):
 
 
 class BPI(Endpoint):
-    url = 'https://api.coindesk.com/v1/bpi/currentprice.json'
+    @property
+    def url(self):
+        base = 'https://api.coindesk.com/v1/bpi/currentprice/{currency}.json'
+
+        return base.format(
+            currency=self.currency
+        )
 
     def format(self, data):
         bpi = data.get('bpi')
         timestamp = data.get('time').get('updated')
 
         # format
-        eur = '{} {}'.format(
-            bpi.get('EUR').get('code'),
-            bpi.get('EUR').get('rate')
-        )
         usd = '{} {}'.format(
             bpi.get('USD').get('code'),
             bpi.get('USD').get('rate')
         )
 
-        return eur, usd, timestamp
+        return usd, usd, timestamp
 
 
 class Coinmarketcap(Endpoint):
-    url = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'
+    @property
+    def url(self):
+        return 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'
 
     def format(self, data):
         record = data[0]

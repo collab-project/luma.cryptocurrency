@@ -17,12 +17,12 @@ class EndpointTestCase(unittest.TestCase):
     def assert_endpoint(self, ep, m):
         m.register_uri('GET', ep.url, json=self.reference, status_code=200)
         result = ep.load()
-
         self.assertEqual(result, self.reference)
 
     def test_load_bpi(self):
-        self.reference = get_reference_json('bpi.json')
+        self.reference = get_reference_json('bpi/currentprice/USD.json')
         ep = endpoint.BPI()
+        ep.currency = 'USD'
 
         self.assert_endpoint(ep)
 
