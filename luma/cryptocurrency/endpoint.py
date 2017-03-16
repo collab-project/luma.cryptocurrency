@@ -5,13 +5,15 @@
 import time
 
 import requests
+import requests_cache
 
 
 class Endpoint(object):
     currency = 'USD'
 
     def get_json(self, url):
-        response = requests.get(url)
+        with requests_cache.disabled():
+            response = requests.get(url)
         result = response.json()
         return result
 
@@ -29,16 +31,16 @@ class BPI(Endpoint):
         )
 
     def format(self, data):
-        bpi = data.get('bpi')
+        record = data.get('bpi')
         timestamp = data.get('time').get('updated')
 
         # format
         usd = '{} {}'.format(
-            bpi.get('USD').get('code'),
-            bpi.get('USD').get('rate')
+            record.get('USD').get('code'),
+            record.get('USD').get('rate')
         )
 
-        return usd, usd, timestamp
+        return usd, timestamp
 
 
 class Coinmarketcap(Endpoint):
@@ -49,6 +51,7 @@ class Coinmarketcap(Endpoint):
     def format(self, data):
         record = data[0]
         usd = 'USD {}'.format(record.get('price_usd'))
-        timestamp = time.gmtime(int(record.get('last_updated')))
+        timestamp = time.strftime('%m/%d/%Y %H:%M:%S',
+            time.gmtime(int(record.get('last_updated'))))
 
-        return usd, usd, time.strftime('%m/%d/%Y %H:%M:%S', timestamp)
+        return usd, timestamp

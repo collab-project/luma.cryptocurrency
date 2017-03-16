@@ -30,7 +30,7 @@ setup(
     packages=['luma.cryptocurrency'],
     install_requires=[
         'luma.oled',
-        'requests'
+        'requests-cache'
     ],
     extras_require={
         'docs': [
