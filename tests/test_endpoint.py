@@ -28,7 +28,7 @@ class EndpointTestCase(unittest.TestCase):
 
     def test_load_coinmarketcap(self):
         self.maxDiff = None
-        self.reference = get_reference_json('coinmarketcap.json')
+        self.reference = get_reference_json('coinmarketcap/coinmarketcap.json')
         ep = endpoint.Coinmarketcap()
 
         self.assert_endpoint(ep)
