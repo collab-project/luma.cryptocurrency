@@ -22,7 +22,7 @@ def get_font(fname):
     ))
 
 
-def draw(eur, usd, timestamp):
+def draw(usd, timestamp):
     # font
     font_path = get_font('red-alert.ttf')
 
@@ -33,7 +33,6 @@ def draw(eur, usd, timestamp):
     with canvas(device) as draw:
         draw.text((0, 0), timestamp, font=default_font, fill="white")
         draw.text((0, 16), usd, font=currency_font, fill="white")
-        draw.text((0, 38), eur, font=currency_font, fill="white")
 
 
 if __name__ == "__main__":
@@ -56,12 +55,12 @@ if __name__ == "__main__":
         ep = BPI()
 
         result = ep.load()
-        eur, usd, timestamp = ep.format(result)
+        usd, timestamp = ep.format(result)
 
         pprint.pprint(result)
         print("-" * 20)
 
-        draw(eur, usd, timestamp)
+        draw(usd, timestamp)
 
     clock()
 
