@@ -16,9 +16,15 @@ from luma.cryptocurrency.interval import Interval
 from luma.cryptocurrency.endpoint import BPI
 
 
+def get_font(fname):
+    return os.path.abspath(os.path.join(
+        os.path.dirname(__file__), 'fonts', fname
+    ))
+
+
 def draw(eur, usd, timestamp):
     # font
-    font_path = os.path.join('fonts', 'red-alert.ttf')
+    font_path = get_font('red-alert.ttf')
 
     default_font = ImageFont.truetype(font_path, 12)
     currency_font = ImageFont.truetype(font_path, 17)
