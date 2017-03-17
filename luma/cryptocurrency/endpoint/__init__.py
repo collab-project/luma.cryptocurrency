@@ -20,6 +20,9 @@ class EndpointResponse(object):
         self.price_in_btc = self.parse_price_in_btc()
         self.timestamp = self.parse_timestamp()
 
+    def parse_price_in_btc(self):
+        return 1
+
 
 class Endpoint(object):
     """

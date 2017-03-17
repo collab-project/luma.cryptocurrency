@@ -20,9 +20,6 @@ class BitstampResponse(EndpointResponse):
     def parse_price(self):
         return float(self.json_data.get('last'))
 
-    def parse_price_in_btc(self):
-        return 1
-
     def parse_timestamp(self):
         return datetime.fromtimestamp(
             int(self.json_data.get('timestamp')), tz=tzutc())

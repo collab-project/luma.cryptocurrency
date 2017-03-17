@@ -16,28 +16,36 @@ def main(actual_args=None):
     """
     Entry point for console script.
     """
-    # ignore requests debug messages
-    logging.getLogger("requests").setLevel(logging.ERROR)
-
-    parser = create_parser()
     if actual_args is None:
         actual_args = sys.argv[1:]
 
+    # ignore requests debug messages
+    logging.getLogger("requests").setLevel(logging.ERROR)
+
+    # parser
+    device_parser = create_parser()
+    subparsers = device_parser.add_subparsers()
+
     # override defaults
-    parser.set_defaults(
+    device_parser.set_defaults(
         display='pygame'
     )
-    args = parser.parse_args(actual_args)
 
+    # app parser
+    app_parser = subparsers.add_parser('app', help='bar', description='foo')
+    extra_group = app_parser.add_argument_group('General')
+    extra_group.add_argument('--test', type=int, default=1, help='Testing')
+
+    args = device_parser.parse_args(actual_args)
     if args.config:
         # load config from file
         config = load_config(args.config)
-        args = parser.parse_args(config + actual_args)
+        args = device_parser.parse_args(config + actual_args)
 
-    # device
+    # create device
     try:
         device = create_device(args, display_types)
     except luma.core.error.Error as e:
-        parser.error(e)
+        device_parser.error(e)
 
     run(device)
