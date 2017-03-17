@@ -7,8 +7,8 @@ import logging
 from luma.core.render import canvas
 from luma.core.sprite_system import framerate_regulator
 
-from .endpoint import BPI
 from .util import make_font
+from .endpoint.bpi import BPI
 
 
 logger = logging.getLogger()
@@ -34,7 +34,7 @@ def run(device):
                     draw.text((0, 0), timestamp, font=default_font, fill="white")
                     draw.text((0, 16), usd, font=currency_font, fill="white")
 
-            if regulator.called % 61 == 0:
+            if regulator.called % 60 == 0:
                 result = ep.load()
                 logger.debug("-" * 20)
 

@@ -69,3 +69,13 @@ def make_font(name='red-alert.ttf', size=12):
     font_path = get_reference_path(os.path.join(
         'fonts', name))
     return ImageFont.truetype(font_path, size)
+
+
+def get_module_name(obj):
+    """
+    Get module name for ``obj``, e.g.::
+
+      from luma.cryptocurrency.endpoint.bpi import BPI
+      get_module_name(BPI)  # returns 'bpi'
+    """
+    return obj.__module__.rsplit('.')[-1]

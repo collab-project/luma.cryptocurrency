@@ -3,9 +3,8 @@
 # See LICENSE.rst for details.
 
 import os
-import time
 
-from . import util
+from .. import util
 
 
 class EndpointResponse(object):
@@ -49,8 +48,8 @@ class Endpoint(object):
         :rtype: dict
         """
         json_path = util.get_reference_path(
-            os.path.join('endpoint', self.id, self.api_version,
-            'supported-currencies.json'))
+            os.path.join('endpoint', util.get_module_name(self),
+            self.api_version, 'supported-currencies.json'))
 
         return util.load_json_file(json_path)
 
@@ -62,59 +61,3 @@ class Endpoint(object):
         response = EndpointResponse(json_data)
 
         return response
-
-
-class BPI(Endpoint):
-    """
-    Endpoint for coindesk.com
-
-    :see: https://www.coindesk.com/api/
-    """
-    id = 'bpi'
-
-    @property
-    def url(self):
-        base = 'https://api.coindesk.com/{api_version}/bpi/currentprice/{currency}.json'
-
-        return base.format(
-            currency=self.currency_code,
-            api_version=self.api_version
-        )
-
-    def format(self, data):
-        record = data.get('bpi')
-        timestamp = data.get('time').get('updated')
-
-        # format
-        usd = '{} {}'.format(
-            record.get('USD').get('code'),
-            record.get('USD').get('rate')
-        )
-
-        return usd, timestamp
-
-
-class Coinmarketcap(Endpoint):
-    """
-    Endpoint for coinmarketcap.com
-
-    :see: https://coinmarketcap.com/api/
-    """
-    id = 'coinmarketcap'
-
-    @property
-    def url(self):
-        base = 'https://api.coinmarketcap.com/{api_version}/ticker/{coin}/'
-
-        return base.format(
-            api_version=self.api_version,
-            coin=self.coin
-        )
-
-    def format(self, data):
-        record = data[0]
-        usd = 'USD {}'.format(record.get('price_usd'))
-        timestamp = time.strftime('%m/%d/%Y %H:%M:%S',
-            time.gmtime(int(record.get('last_updated'))))
-
-        return usd, timestamp
