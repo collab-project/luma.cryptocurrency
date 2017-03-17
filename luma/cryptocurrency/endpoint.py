@@ -8,6 +8,16 @@ import time
 from . import util
 
 
+class EndpointResponse(object):
+    """
+    """
+    def __init__(self, json_data):
+        self.json_data = json_data
+
+    def format(self):
+        pass
+
+
 class Endpoint(object):
     """
     """
@@ -46,8 +56,12 @@ class Endpoint(object):
 
     def load(self):
         """
+        :rtype: dict
         """
-        return util.request_json(self.url, timeout=self.timeout)
+        json_data = util.request_json(self.url, timeout=self.timeout)
+        response = EndpointResponse(json_data)
+
+        return response
 
 
 class BPI(Endpoint):

@@ -28,6 +28,7 @@ setup(
     download_url="https://github.com/collab-project/luma.cryptocurrency/tarball/" + version,
     namespace_packages=['luma'],
     packages=['luma.cryptocurrency'],
+    include_package_data=True,
     entry_points={
         'console_scripts': [
             'luma-cryptocurrency = luma.cryptocurrency.console_script:main'

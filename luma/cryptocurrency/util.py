@@ -35,7 +35,7 @@ def request_json(url, timeout=4):
         s = requests.Session()
         retries = Retry(total=5,
                         backoff_factor=0.1,
-                        status_forcelist=[ 500, 502, 503, 504 ])
+                        status_forcelist=[500, 502, 503, 504])
 
         s.mount('https://', HTTPAdapter(max_retries=retries))
 
@@ -57,6 +57,15 @@ def load_json_file(path):
 
 
 def make_font(name='red-alert.ttf', size=12):
+    """
+    Create new font instance.
+
+    :param name:
+    :type name:
+    :param size:
+    :type size:
+    :return: A font object.
+    """
     font_path = get_reference_path(os.path.join(
         'fonts', name))
     return ImageFont.truetype(font_path, size)

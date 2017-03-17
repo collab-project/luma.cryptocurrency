@@ -16,15 +16,16 @@ class EndpointTest(object):
         self.ep = self.endpointClass()
 
     @requests_mock.Mocker()
-    def assert_endpoint(self, ep, m):
-        m.register_uri('GET', ep.url, json=self.reference, status_code=200)
-        result = ep.load()
+    def assert_endpoint(self, m):
+        m.register_uri('GET', self.ep.url, json=self.reference,
+            status_code=200)
+        result = self.ep.load()
 
-        self.assertEqual(result, self.reference)
+        self.assertEqual(result.json_data, self.reference)
 
     def test_load(self):
         self.reference = get_reference_json(self.ref_json)
-        self.assert_endpoint(self.ep)
+        self.assert_endpoint()
 
     def test_supported_currencies(self):
         currencies = self.ep.get_supported_currencies()
