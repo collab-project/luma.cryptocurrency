@@ -32,9 +32,11 @@ def run(device):
 
     # endpoint
     # from .endpoint.coinmarketcap import Coinmarketcap
-    from .endpoint.bpi import BPI
+    # from .endpoint.bpi import BPI
+    from .endpoint.bitstamp import Bitstamp
     # ep = Coinmarketcap(coin='ethereum', currency='EUR')
-    ep = BPI()
+    # ep = BPI()
+    ep = Bitstamp()
     data = format_data(ep)
 
     try:

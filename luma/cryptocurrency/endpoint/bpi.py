@@ -16,7 +16,8 @@ from . import Endpoint, EndpointResponse
 class BPIResponse(EndpointResponse):
 
     def parse_price(self):
-        return self.json_data.get('bpi').get('USD').get('rate_float')
+        return self.json_data.get('bpi').get(
+            self.currency_code).get('rate_float')
 
     def parse_price_in_btc(self):
         return 1

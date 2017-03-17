@@ -1,0 +1,10 @@
+[
+	{
+		"currency": "EUR",
+		"country": "Euro"
+	},
+	{
+        "currency": "USD",
+        "country": "United States Dollar"
+    }
+]

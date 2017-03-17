@@ -9,14 +9,18 @@ from dateutil.tz.tz import tzutc
 
 import requests_mock
 
-from luma.cryptocurrency.endpoint import bpi, coinmarketcap
+from luma.cryptocurrency.endpoint import bpi, coinmarketcap, bitstamp
 
 from .helpers import get_reference_json
 
 
 class EndpointTest(object):
+    currency = 'USD'
+    currency_country = 'United States Dollar'
+    price_in_btc = 1
+
     def setUp(self):
-        self.ep = self.endpointClass()
+        self.ep = self.endpointClass(currency=self.currency)
 
     @requests_mock.Mocker()
     def assert_response(self, m):
@@ -40,7 +44,7 @@ class EndpointTest(object):
         currencies = self.ep.get_supported_currencies()
 
         self.assertTrue(len(currencies) > 0)
-        self.assertEqual(self.ep.currency_country, "United States Dollar")
+        self.assertEqual(self.ep.currency_country, self.currency_country)
 
     def test_supported_currency(self):
         currency = 'EUR'
@@ -58,18 +62,27 @@ class EndpointTest(object):
 
 
 class BPITestCase(EndpointTest, unittest.TestCase):
+    currency = 'CNY'
+    currency_country = 'Chinese Yuan'
     endpointClass = bpi.BPI
-    ref_json = 'bpi/v1/currentprice/bitcoin/USD.json'
+    ref_json = 'bpi/v1/currentprice/bitcoin/CNY.json'
 
-    price = 1259.232
-    price_in_btc = 1
-    timestamp = datetime(2017, 3, 16, 1, 26, tzinfo=tzutc())
+    price = 7952.5275
+    timestamp = datetime(2017, 3, 16, 1, 25, tzinfo=tzutc())
 
 
 class CoinmarketcapTestCase(EndpointTest, unittest.TestCase):
+    currency = 'USD'
     endpointClass = coinmarketcap.Coinmarketcap
     ref_json = 'coinmarketcap/v1/currentprice/bitcoin/USD.json'
 
     price = 1255.26
-    price_in_btc = 1
     timestamp = datetime(2017, 3, 16, 0, 59, 26, tzinfo=tzutc())
+
+
+class BitstampTestCase(EndpointTest, unittest.TestCase):
+    endpointClass = bitstamp.Bitstamp
+    ref_json = 'bitstamp/v2/currentprice/bitcoin/USD.json'
+
+    price = 1103.2
+    timestamp = datetime(2017, 3, 17, 3, 45, 13, tzinfo=tzutc())

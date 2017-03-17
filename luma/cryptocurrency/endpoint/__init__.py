@@ -25,13 +25,15 @@ class Endpoint(object):
     """
     Basic endpoint.
     """
+    api_version = 'v1'
     responseType = EndpointResponse
 
-    def __init__(self, coin='bitcoin', currency='USD', api_version='v1',
+    def __init__(self, coin='bitcoin', currency='USD', api_version=None,
                  timeout=4):
         self.coin = coin
         self.currency_code = currency
-        self.api_version = api_version
+        if api_version is not None:
+            self.api_version = api_version
         self.timeout = timeout
         self.currencies = self.get_supported_currencies()
 
