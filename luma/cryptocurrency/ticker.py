@@ -8,10 +8,19 @@ from luma.core.render import canvas
 from luma.core.sprite_system import framerate_regulator
 
 from .util import make_font
-from .endpoint.bpi import BPI
 
 
 logger = logging.getLogger()
+
+
+def format_data(ep):
+    data = ep.load()
+
+    data.price = '{} {}'.format(data.currency_code, str(data.price))
+    data.timestamp = data.timestamp.isoformat(' ')
+
+    logger.debug('{} {}'.format(data.price, "*" * 10))
+    return data
 
 
 def run(device):
@@ -21,22 +30,24 @@ def run(device):
     default_font = make_font()
     currency_font = make_font(size=17)
 
-    # BPI endpoint
+    # endpoint
+    from .endpoint.coinmarketcap import Coinmarketcap
+    from .endpoint.bpi import BPI
+    # ep = Coinmarketcap(coin='ethereum', currency='EUR')
     ep = BPI()
-    data = ep.load()
+    data = format_data(ep)
 
     try:
         while True:
             with regulator:
                 # draw
                 with canvas(device) as draw:
-                    draw.text((0, 0), data.timestamp.isoformat(' '), font=default_font, fill="white")
-                    draw.text((0, 16), str(data.price), font=currency_font, fill="white")
+                    draw.text((0, 0), data.timestamp, font=default_font, fill="white")
+                    draw.text((0, 16), data.price, font=currency_font, fill="white")
 
             if regulator.called % 60 == 0:
                 # reload
-                data = ep.load()
-                logger.debug("-" * 20)
+                data = format_data(ep)
 
     except KeyboardInterrupt:
         pass

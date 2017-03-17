@@ -3,7 +3,6 @@
 # See LICENSE.rst for details.
 
 import os.path
-from datetime import datetime
 
 from .. import util
 
@@ -14,18 +13,12 @@ __all__ = ["Endpoint", "EndpointResponse"]
 class EndpointResponse(object):
     """
     """
-    def __init__(self, json_data):
+    def __init__(self, json_data, currency_code):
         self.json_data = json_data
+        self.currency_code = currency_code
         self.price = self.parse_price()
+        self.price_in_btc = self.parse_price_in_btc()
         self.timestamp = self.parse_timestamp()
-
-    def parse_price(self):
-        """
-        """
-
-    def parse_timestamp(self):
-        """
-        """
 
 
 class Endpoint(object):
@@ -72,6 +65,6 @@ class Endpoint(object):
         :rtype: dict
         """
         json_data = util.request_json(self.get_url(), timeout=self.timeout)
-        response = self.responseType(json_data)
+        response = self.responseType(json_data, self.currency_code)
 
         return response

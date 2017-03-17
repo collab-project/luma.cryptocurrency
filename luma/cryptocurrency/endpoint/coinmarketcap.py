@@ -22,7 +22,11 @@ class CoinmarketcapResponse(EndpointResponse):
         return self.json_data[0]
 
     def parse_price(self):
-        return float(self.data.get('price_usd'))
+        return float(self.data.get('price_{}'.format(
+            self.currency_code.lower())))
+
+    def parse_price_in_btc(self):
+        return float(self.data.get('price_btc'))
 
     def parse_timestamp(self):
         return datetime.fromtimestamp(
@@ -34,6 +38,9 @@ class Coinmarketcap(Endpoint):
 
     def get_url(self):
         base = 'https://api.coinmarketcap.com/{api_version}/ticker/{coin}/'
+
+        if self.currency_code != 'USD':
+            base += '?convert={}'.format(self.currency_code)
 
         return base.format(
             api_version=self.api_version,

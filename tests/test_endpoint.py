@@ -29,6 +29,7 @@ class EndpointTest(object):
 
         self.assertEqual(result.json_data, self.reference)
         self.assertEqual(result.price, self.price)
+        self.assertEqual(result.price_in_btc, self.price_in_btc)
         self.assertEqual(result.timestamp, self.timestamp)
 
     def test_load(self):
@@ -61,6 +62,7 @@ class BPITestCase(EndpointTest, unittest.TestCase):
     ref_json = 'bpi/v1/currentprice/bitcoin/USD.json'
 
     price = 1259.232
+    price_in_btc = 1
     timestamp = datetime(2017, 3, 16, 1, 26, tzinfo=tzutc())
 
 
@@ -69,4 +71,5 @@ class CoinmarketcapTestCase(EndpointTest, unittest.TestCase):
     ref_json = 'coinmarketcap/v1/currentprice/bitcoin/USD.json'
 
     price = 1255.26
+    price_in_btc = 1
     timestamp = datetime(2017, 3, 16, 0, 59, 26, tzinfo=tzutc())
