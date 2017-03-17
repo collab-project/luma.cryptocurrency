@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2017 Thijs Triemstra and contributors
+# See LICENSE.rst for details.
+
 import json
 import os.path
 
@@ -23,9 +27,12 @@ def request_json(url, timeout=4):
     :type url:
     """
     with requests_cache.disabled():
-        response = requests.get(url, timeout=timeout)
+        try:
+            response = requests.get(url, timeout=timeout)
+            return response.json()
 
-    return response.json()
+        except requests.exceptions.ConnectionError:
+            print('Connection failed!')
 
 
 def load_json_file(path):
