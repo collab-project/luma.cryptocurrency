@@ -20,11 +20,13 @@ class EndpointTest(object):
         """
         A valid EndpointResponse is returned.
         """
-        m.register_uri('GET', self.ep.url, json=self.reference,
+        m.register_uri('GET', self.ep.get_url(), json=self.reference,
             status_code=200)
         result = self.ep.load()
 
         self.assertEqual(result.json_data, self.reference)
+        self.assertEqual(result.price, self.price)
+        self.assertEqual(result.timestamp, self.timestamp)
 
     def test_load(self):
         self.reference = get_reference_json(self.ref_json)
@@ -54,8 +56,12 @@ class EndpointTest(object):
 class BPITestCase(EndpointTest, unittest.TestCase):
     endpointClass = bpi.BPI
     ref_json = 'bpi/v1/currentprice/bitcoin/USD.json'
+    price = 1259.232
+    timestamp = "2017-03-16T01:26:00+00:00"
 
 
 class CoinmarketcapTestCase(EndpointTest, unittest.TestCase):
     endpointClass = coinmarketcap.Coinmarketcap
     ref_json = 'coinmarketcap/v1/currentprice/bitcoin/USD.json'
+    price = 1255.26
+    timestamp = "1489625966"

@@ -2,9 +2,13 @@
 # Copyright (c) 2017 Thijs Triemstra and contributors
 # See LICENSE.rst for details.
 
-import os
+import os.path
+from datetime import datetime
 
 from .. import util
+
+
+__all__ = ["Endpoint", "EndpointResponse"]
 
 
 class EndpointResponse(object):
@@ -12,14 +16,24 @@ class EndpointResponse(object):
     """
     def __init__(self, json_data):
         self.json_data = json_data
+        self.price = self.parse_price()
+        self.timestamp = self.parse_timestamp()
 
-    def format(self):
-        pass
+    def parse_price(self):
+        """
+        """
+
+    def parse_timestamp(self):
+        """
+        """
 
 
 class Endpoint(object):
     """
+    Basic endpoint.
     """
+    responseType = EndpointResponse
+
     def __init__(self, coin='bitcoin', currency='USD', api_version='v1',
                  timeout=4):
         self.coin = coin
@@ -57,7 +71,7 @@ class Endpoint(object):
         """
         :rtype: dict
         """
-        json_data = util.request_json(self.url, timeout=self.timeout)
-        response = EndpointResponse(json_data)
+        json_data = util.request_json(self.get_url(), timeout=self.timeout)
+        response = self.responseType(json_data)
 
         return response

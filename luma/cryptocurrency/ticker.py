@@ -21,22 +21,22 @@ def run(device):
     default_font = make_font()
     currency_font = make_font(size=17)
 
-    # BPI
+    # BPI endpoint
     ep = BPI()
-    result = ep.load()
+    data = ep.load()
 
     try:
         while True:
             with regulator:
                 # draw
                 with canvas(device) as draw:
-                    usd, timestamp = ep.format(result)
-                    draw.text((0, 0), timestamp, font=default_font, fill="white")
-                    draw.text((0, 16), usd, font=currency_font, fill="white")
+                    print(dir(data))
+                    draw.text((0, 0), data.timestamp, font=default_font, fill="white")
+                    draw.text((0, 16), data.price, font=currency_font, fill="white")
 
             if regulator.called % 60 == 0:
                 # reload
-                result = ep.load()
+                data = ep.load()
                 logger.debug("-" * 20)
 
     except KeyboardInterrupt:

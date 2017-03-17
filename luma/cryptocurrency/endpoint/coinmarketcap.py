@@ -8,26 +8,31 @@ Endpoint for coinmarketcap.com
 :see: https://coinmarketcap.com/api/
 """
 
-import time
+from . import Endpoint, EndpointResponse
 
-from . import Endpoint
+
+class CoinmarketcapResponse(EndpointResponse):
+
+    @property
+    def data(self):
+        return self.json_data[0]
+
+    def parse_price(self):
+        return float(self.data.get('price_usd'))
+
+    def parse_timestamp(self):
+        # timestamp = time.strftime('%m/%d/%Y %H:%M:%S',
+        #    time.gmtime(int(record.get('last_updated'))))
+        return self.data.get('last_updated')
 
 
 class Coinmarketcap(Endpoint):
+    responseType = CoinmarketcapResponse
 
-    @property
-    def url(self):
+    def get_url(self):
         base = 'https://api.coinmarketcap.com/{api_version}/ticker/{coin}/'
 
         return base.format(
             api_version=self.api_version,
             coin=self.coin
         )
-
-    def format(self, data):
-        record = data[0]
-        usd = 'USD {}'.format(record.get('price_usd'))
-        timestamp = time.strftime('%m/%d/%Y %H:%M:%S',
-            time.gmtime(int(record.get('last_updated'))))
-
-        return usd, timestamp
