@@ -3,15 +3,19 @@
 # See LICENSE.rst for details.
 
 import os.path
+import logging
 
 from .. import util
 
 
-__all__ = ["Endpoint", "EndpointResponse"]
+__all__ = ["Endpoint", "EndpointResponse", "create_endpoint"]
+
+logger = logging.getLogger()
 
 
 class EndpointResponse(object):
     """
+    Response from :py:class:`Endpoint`s.
     """
     def __init__(self, json_data, currency_code):
         self.json_data = json_data
@@ -73,3 +77,25 @@ class Endpoint(object):
         response = self.responseType(json_data, self.currency_code)
 
         return response
+
+
+def create_endpoint(ep_type):
+    """
+    :param ep_type:
+    :type ep_type: str
+    :rtype: :py:class:`Endpoint` instance
+    """
+    # XXX: refactor
+    if ep_type == 'coinmarketcap':
+        from .coinmarketcap import Coinmarketcap
+        ep = Coinmarketcap(coin='ethereum', currency='EUR')
+    elif ep_type == 'bpi':
+        from .bpi import BPI
+        ep = BPI()
+    elif ep_type == 'bitstamp':
+        from .bitstamp import Bitstamp
+        ep = Bitstamp()
+
+    logger.debug("{} {}".format(ep_type, ep.coin))
+
+    return ep

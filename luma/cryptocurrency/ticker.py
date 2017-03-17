@@ -19,11 +19,11 @@ def format_data(ep):
     data.price = '{} {}'.format(data.currency_code, str(data.price))
     data.timestamp = data.timestamp.isoformat(' ')
 
-    logger.debug('{} {}'.format(data.price, "*" * 10))
+    logger.debug(data.price)
     return data
 
 
-def run(device):
+def run(device, endpoint):
     regulator = framerate_regulator(fps=1)
 
     # font
@@ -31,13 +31,7 @@ def run(device):
     currency_font = make_font(size=17)
 
     # endpoint
-    # from .endpoint.coinmarketcap import Coinmarketcap
-    # from .endpoint.bpi import BPI
-    from .endpoint.bitstamp import Bitstamp
-    # ep = Coinmarketcap(coin='ethereum', currency='EUR')
-    # ep = BPI()
-    ep = Bitstamp()
-    data = format_data(ep)
+    data = format_data(endpoint)
 
     try:
         while True:
@@ -49,7 +43,7 @@ def run(device):
 
             if regulator.called % 60 == 0:
                 # reload
-                data = format_data(ep)
+                data = format_data(endpoint)
 
     except KeyboardInterrupt:
         pass

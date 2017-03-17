@@ -8,6 +8,7 @@ import logging
 import luma.core.error
 
 from .ticker import run
+from .endpoint import create_endpoint
 
 from .demo_opts import create_parser, load_config, create_device, display_types
 
@@ -31,10 +32,11 @@ def main(actual_args=None):
         display='pygame'
     )
 
-    # app parser
-    app_parser = subparsers.add_parser('app', help='bar', description='foo')
-    extra_group = app_parser.add_argument_group('General')
-    extra_group.add_argument('--test', type=int, default=1, help='Testing')
+    # app parsers
+    ticker = subparsers.add_parser('ticker', help='bar', description='foo')
+    extra_group = ticker.add_argument_group('General')
+    extra_group.add_argument('--source', default='coinmarketcap',
+        help='Data provider.')
 
     args = device_parser.parse_args(actual_args)
     if args.config:
@@ -42,10 +44,13 @@ def main(actual_args=None):
         config = load_config(args.config)
         args = device_parser.parse_args(config + actual_args)
 
+    # create endpoint
+    ep = create_endpoint(args.source)
+
     # create device
     try:
         device = create_device(args, display_types)
     except luma.core.error.Error as e:
         device_parser.error(e)
 
-    run(device)
+    run(device, ep)
