@@ -8,6 +8,8 @@ Endpoint for coindesk.com
 :see: https://www.coindesk.com/api/
 """
 
+from dateutil.parser import parse
+
 from . import Endpoint, EndpointResponse
 
 
@@ -17,7 +19,8 @@ class BPIResponse(EndpointResponse):
         return self.json_data.get('bpi').get('USD').get('rate_float')
 
     def parse_timestamp(self):
-        return self.json_data.get('time').get('updatedISO')
+        timestamp = parse(self.json_data.get('time').get('updatedISO'))
+        return timestamp
 
 
 class BPI(Endpoint):

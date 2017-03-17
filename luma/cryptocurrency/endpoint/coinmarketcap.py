@@ -8,6 +8,10 @@ Endpoint for coinmarketcap.com
 :see: https://coinmarketcap.com/api/
 """
 
+from datetime import datetime
+
+from dateutil.tz.tz import tzutc
+
 from . import Endpoint, EndpointResponse
 
 
@@ -21,9 +25,8 @@ class CoinmarketcapResponse(EndpointResponse):
         return float(self.data.get('price_usd'))
 
     def parse_timestamp(self):
-        # timestamp = time.strftime('%m/%d/%Y %H:%M:%S',
-        #    time.gmtime(int(record.get('last_updated'))))
-        return self.data.get('last_updated')
+        return datetime.fromtimestamp(
+            int(self.data.get('last_updated')), tz=tzutc())
 
 
 class Coinmarketcap(Endpoint):

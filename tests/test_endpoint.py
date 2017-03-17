@@ -3,6 +3,9 @@
 # See LICENSE.rst for details.
 
 import unittest
+from datetime import datetime
+
+from dateutil.tz.tz import tzutc
 
 import requests_mock
 
@@ -56,12 +59,14 @@ class EndpointTest(object):
 class BPITestCase(EndpointTest, unittest.TestCase):
     endpointClass = bpi.BPI
     ref_json = 'bpi/v1/currentprice/bitcoin/USD.json'
+
     price = 1259.232
-    timestamp = "2017-03-16T01:26:00+00:00"
+    timestamp = datetime(2017, 3, 16, 1, 26, tzinfo=tzutc())
 
 
 class CoinmarketcapTestCase(EndpointTest, unittest.TestCase):
     endpointClass = coinmarketcap.Coinmarketcap
     ref_json = 'coinmarketcap/v1/currentprice/bitcoin/USD.json'
+
     price = 1255.26
-    timestamp = "1489625966"
+    timestamp = datetime(2017, 3, 16, 0, 59, 26, tzinfo=tzutc())

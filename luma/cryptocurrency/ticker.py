@@ -30,9 +30,8 @@ def run(device):
             with regulator:
                 # draw
                 with canvas(device) as draw:
-                    print(dir(data))
-                    draw.text((0, 0), data.timestamp, font=default_font, fill="white")
-                    draw.text((0, 16), data.price, font=currency_font, fill="white")
+                    draw.text((0, 0), data.timestamp.isoformat(' '), font=default_font, fill="white")
+                    draw.text((0, 16), str(data.price), font=currency_font, fill="white")
 
             if regulator.called % 60 == 0:
                 # reload
