@@ -27,11 +27,17 @@ class Endpoint(object):
             self.currency_country = c.get('country')
 
     def find_currency(self):
+        """
+        :rtype: dict
+        """
         return next((
             x for x in self.currencies if x.get('currency') == self.currency_code),
             None)
 
     def get_supported_currencies(self):
+        """
+        :rtype: dict
+        """
         json_path = util.get_reference_path(
             os.path.join('endpoint', self.id, self.api_version,
             'supported-currencies.json'))
@@ -39,6 +45,8 @@ class Endpoint(object):
         return util.load_json_file(json_path)
 
     def load(self):
+        """
+        """
         return util.request_json(self.url, timeout=self.timeout)
 
 
