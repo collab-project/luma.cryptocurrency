@@ -31,7 +31,7 @@ def run(device):
     currency_font = make_font(size=17)
 
     # endpoint
-    from .endpoint.coinmarketcap import Coinmarketcap
+    # from .endpoint.coinmarketcap import Coinmarketcap
     from .endpoint.bpi import BPI
     # ep = Coinmarketcap(coin='ethereum', currency='EUR')
     ep = BPI()
