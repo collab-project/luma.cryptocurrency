@@ -34,8 +34,8 @@ def request_json(url, timeout=4):
     with requests_cache.disabled():
         s = requests.Session()
         retries = Retry(total=5,
-                        backoff_factor=0.1,
-                        status_forcelist=[500, 502, 503, 504])
+            backoff_factor=0.1,
+            status_forcelist=[500, 502, 503, 504])
 
         s.mount('https://', HTTPAdapter(max_retries=retries))
 

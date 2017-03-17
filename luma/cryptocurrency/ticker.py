@@ -35,6 +35,7 @@ def run(device):
                     draw.text((0, 16), usd, font=currency_font, fill="white")
 
             if regulator.called % 60 == 0:
+                # reload
                 result = ep.load()
                 logger.debug("-" * 20)
 
