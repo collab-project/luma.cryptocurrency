@@ -20,7 +20,13 @@ def main(actual_args=None):
     if actual_args is None:
         actual_args = sys.argv[1:]
 
-    # ignore requests debug messages
+    # logging
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)-15s - %(message)s'
+    )
+    # ignore debug messages
+    logging.getLogger("PIL").setLevel(logging.ERROR)
     logging.getLogger("requests").setLevel(logging.ERROR)
 
     # parser

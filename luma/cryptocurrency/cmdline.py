@@ -7,18 +7,9 @@ Argument parser for examples.
 """
 
 import inspect
-import importlib
-import logging
 import argparse
+import importlib
 from collections import OrderedDict
-
-# logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)-15s - %(message)s'
-)
-# ignore PIL debug messages
-logging.getLogger("PIL").setLevel(logging.ERROR)
 
 
 def get_choices(module_name):
@@ -39,9 +30,26 @@ for namespace in ["oled", "lcd", "led_matrix", "emulator"]:
     display_types[namespace] = get_choices("luma.{0}.device".format(namespace))
 
 
+def display_settings(args):
+    """
+    Display a short summary of the settings.
+
+    :rtype: str
+    """
+    iface = ''
+    if args.display not in display_types["emulator"]:
+        iface = 'Interface: {}\n'.format(args.interface)
+
+    return 'Display: {}\n{}Dimensions: {} x {}\n{}'.format(
+        args.display, iface, args.width, args.height, '-' * 40)
+
+
 def load_config(path):
     """
     Load device configuration from file path and return parsed data.
+
+    :param path: Location of configuration file.
+    :type path: str
     """
     args = []
     with open(path, "r") as fp:
@@ -50,6 +58,62 @@ def load_config(path):
                 args.append(line.replace("\n", ""))
 
     return args
+
+
+class make_serial(object):
+    def __init__(self, opts, gpio=None):
+        self.opts = opts
+        self.gpio = gpio
+
+    def i2c(self):
+        from luma.core.serial import i2c
+        return i2c(port=self.opts.i2c_port, address=self.opts.i2c_address)
+
+    def spi(self):
+        from luma.core.serial import spi
+        return spi(port=self.opts.spi_port,
+                   device=self.opts.spi_device,
+                   bus_speed_hz=self.opts.spi_bus_speed,
+                   gpio_DC=self.opts.gpio_data_command,
+                   gpio_RST=self.opts.gpio_reset,
+                   gpio=self.gpio)
+
+
+def create_device(args, dtypes=None):
+    """
+    Create and return device.
+    """
+    device = None
+    if dtypes is None:
+        dtypes = display_types
+
+    if args.display in dtypes.get('oled'):
+        import luma.oled.device
+        Device = getattr(luma.oled.device, args.display)
+        Serial = getattr(make_serial(args), args.interface)
+        device = Device(Serial(), **vars(args))
+
+    elif args.display in dtypes.get('lcd'):
+        import luma.lcd.device
+        import luma.lcd.aux
+        Device = getattr(luma.lcd.device, args.display)
+        Serial = getattr(make_serial(args), args.interface)
+        luma.lcd.aux.backlight(gpio_LIGHT=args.gpio_backlight).enable(True)
+        device = Device(Serial(), **vars(args))
+
+    elif args.display in dtypes.get('led_matrix'):
+        import luma.led_matrix.device
+        from luma.core.serial import noop
+        Device = getattr(luma.led_matrix.device, args.display)
+        Serial = make_serial(args, gpio=noop()).spi
+        device = Device(serial_interface=Serial(), **vars(args))
+
+    elif args.display in dtypes.get('emulator'):
+        import luma.emulator.device
+        Device = getattr(luma.emulator.device, args.display)
+        device = Device(**vars(args))
+
+    return device
 
 
 def create_parser(description='luma.examples arguments'):
@@ -107,57 +171,3 @@ def create_parser(description='luma.examples arguments'):
         pass
 
     return parser
-
-
-class make_serial(object):
-    def __init__(self, opts, gpio=None):
-        self.opts = opts
-        self.gpio = gpio
-
-    def i2c(self):
-        from luma.core.serial import i2c
-        return i2c(port=self.opts.i2c_port, address=self.opts.i2c_address)
-
-    def spi(self):
-        from luma.core.serial import spi
-        return spi(port=self.opts.spi_port,
-                   device=self.opts.spi_device,
-                   bus_speed_hz=self.opts.spi_bus_speed,
-                   gpio_DC=self.opts.gpio_data_command,
-                   gpio_RST=self.opts.gpio_reset,
-                   gpio=self.gpio)
-
-
-def create_device(args, display_types):
-    """
-    Create and return device.
-    """
-    device = None
-
-    if args.display in display_types.get('oled'):
-        import luma.oled.device
-        Device = getattr(luma.oled.device, args.display)
-        Serial = getattr(make_serial(args), args.interface)
-        device = Device(Serial(), **vars(args))
-
-    elif args.display in display_types.get('lcd'):
-        import luma.lcd.device
-        import luma.lcd.aux
-        Device = getattr(luma.lcd.device, args.display)
-        Serial = getattr(make_serial(args), args.interface)
-        luma.lcd.aux.backlight(gpio_LIGHT=args.gpio_backlight).enable(True)
-        device = Device(Serial(), **vars(args))
-
-    elif args.display in display_types.get('led_matrix'):
-        import luma.led_matrix.device
-        from luma.core.serial import noop
-        Device = getattr(luma.led_matrix.device, args.display)
-        Serial = make_serial(args, gpio=noop()).spi
-        device = Device(serial_interface=Serial(), **vars(args))
-
-    elif args.display in display_types.get('emulator'):
-        import luma.emulator.device
-        Device = getattr(luma.emulator.device, args.display)
-        device = Device(**vars(args))
-
-    return device
