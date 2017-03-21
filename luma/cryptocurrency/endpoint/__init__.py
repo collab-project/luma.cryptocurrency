@@ -79,7 +79,7 @@ class Endpoint(object):
         return response
 
 
-def create_endpoint(ep_type):
+def create_endpoint(ep_type, coin, currency):
     """
     :param ep_type:
     :type ep_type: str
@@ -88,13 +88,13 @@ def create_endpoint(ep_type):
     # XXX: refactor
     if ep_type == 'coinmarketcap':
         from .coinmarketcap import Coinmarketcap
-        ep = Coinmarketcap(coin='ethereum', currency='EUR')
+        ep = Coinmarketcap(coin=coin, currency=currency)
     elif ep_type == 'bpi':
         from .bpi import BPI
-        ep = BPI()
+        ep = BPI(coin=coin, currency=currency)
     elif ep_type == 'bitstamp':
         from .bitstamp import Bitstamp
-        ep = Bitstamp()
+        ep = Bitstamp(coin=coin, currency=currency)
 
     logger.debug("{} {}".format(ep_type, ep.coin))
 

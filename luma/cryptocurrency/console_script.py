@@ -37,6 +37,10 @@ def main(actual_args=None):
     extra_group = ticker.add_argument_group('General')
     extra_group.add_argument('--source', default='coinmarketcap',
         help='Data provider.')
+    extra_group.add_argument('--coin', default='bitcoin',
+        help='Coin.')
+    extra_group.add_argument('--currency', default='USD',
+        help='Currency.')
 
     args = device_parser.parse_args(actual_args)
     if args.config:
@@ -45,7 +49,7 @@ def main(actual_args=None):
         args = device_parser.parse_args(config + actual_args)
 
     # create endpoint
-    ep = create_endpoint(args.source)
+    ep = create_endpoint(args.source, args.coin, args.currency)
 
     # create device
     try:
