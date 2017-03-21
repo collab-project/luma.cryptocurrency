@@ -10,7 +10,7 @@ import luma.core.error
 from .ticker import run
 from .endpoint import create_endpoint
 
-from .demo_opts import create_parser, load_config, create_device, display_types
+from .cmdline import create_parser, load_config, create_device, display_types
 
 
 def main(actual_args=None):
