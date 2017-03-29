@@ -7,10 +7,12 @@ import logging
 
 import luma.core.error
 
+from luma.core.cmdline import (create_parser, load_config, create_device,
+    get_display_types)
+
+
 from .ticker import run
 from .endpoint import create_endpoint
-
-from .cmdline import create_parser, load_config, create_device, display_types
 
 
 def main(actual_args=None):
@@ -30,7 +32,7 @@ def main(actual_args=None):
     logging.getLogger("requests").setLevel(logging.ERROR)
 
     # parser
-    device_parser = create_parser()
+    device_parser = create_parser(description='luma.cryptocurrency')
     subparsers = device_parser.add_subparsers()
 
     # override defaults
@@ -59,6 +61,7 @@ def main(actual_args=None):
 
     # create device
     try:
+        display_types = get_display_types()
         device = create_device(args, display_types)
     except luma.core.error.Error as e:
         device_parser.error(e)
