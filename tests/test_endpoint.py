@@ -89,7 +89,15 @@ class BPITestCase(EndpointTest, TestCase):
     timestamp = datetime(2017, 3, 16, 1, 25, tzinfo=tzutc())
 
 
-class CoinmarketcapTestCase(EndpointTest, TestCase):
+class BitstampTestCase(EndpointTest, TestCase):
+    endpointClass = bitstamp.Bitstamp
+    ref_json = 'bitstamp/v2/currentprice/bitcoin/USD.json'
+
+    price = 1103.2
+    timestamp = datetime(2017, 3, 17, 3, 45, 13, tzinfo=tzutc())
+
+
+class CoinmarketcapUSDTestCase(EndpointTest, TestCase):
     currency = 'USD'
     endpointClass = coinmarketcap.Coinmarketcap
     ref_json = 'coinmarketcap/v1/currentprice/bitcoin/USD.json'
@@ -98,9 +106,10 @@ class CoinmarketcapTestCase(EndpointTest, TestCase):
     timestamp = datetime(2017, 3, 16, 0, 59, 26, tzinfo=tzutc())
 
 
-class BitstampTestCase(EndpointTest, TestCase):
-    endpointClass = bitstamp.Bitstamp
-    ref_json = 'bitstamp/v2/currentprice/bitcoin/USD.json'
+class CoinmarketcapConversionTestCase(CoinmarketcapUSDTestCase):
+    currency = 'EUR'
+    currency_country = 'Euro'
+    ref_json = 'coinmarketcap/v1/currentprice/bitcoin/EUR.json'
 
-    price = 1103.2
-    timestamp = datetime(2017, 3, 17, 3, 45, 13, tzinfo=tzutc())
+    price = 966.41690066
+    timestamp = datetime(2017, 3, 29, 22, 44, 6, tzinfo=tzutc())
