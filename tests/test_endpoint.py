@@ -17,12 +17,16 @@ from .helpers import get_reference_json
 
 
 class EndpointTest(object):
+    api_version = None
     currency = 'USD'
     currency_country = 'United States Dollar'
     price_in_btc = 1
 
     def setUp(self):
-        self.ep = self.endpointClass(currency=self.currency)
+        self.ep = self.endpointClass(
+            currency=self.currency,
+            api_version=self.api_version
+        )
 
     @requests_mock.Mocker()
     def assert_valid_response(self, m):
@@ -75,6 +79,7 @@ class EndpointTest(object):
 
 
 class BPITestCase(EndpointTest, TestCase):
+    api_version = 'v1'
     currency = 'CNY'
     currency_country = 'Chinese Yuan'
     endpointClass = bpi.BPI
