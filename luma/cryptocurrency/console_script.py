@@ -6,7 +6,6 @@ import sys
 import logging
 
 import luma.core.error
-
 from luma.core.cmdline import (create_parser, load_config, create_device,
     get_display_types)
 
