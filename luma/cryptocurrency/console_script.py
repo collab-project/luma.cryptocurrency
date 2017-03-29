@@ -9,7 +9,6 @@ import luma.core.error
 from luma.core.cmdline import (create_parser, load_config, create_device,
     get_display_types)
 
-
 from .ticker import run
 from .endpoint import create_endpoint
 

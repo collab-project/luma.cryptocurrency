@@ -25,17 +25,17 @@ def get_reference_path(path):
     ))
 
 
-def request_json(url, timeout=4):
+def request_json(url, timeout=4, retries=5):
     """
     :param url:
     :type url:
     """
     s = requests.Session()
-    retries = Retry(total=5,
+    max_retries = Retry(total=retries,
         backoff_factor=0.1,
         status_forcelist=[500, 502, 503, 504])
 
-    s.mount('https://', HTTPAdapter(max_retries=retries))
+    s.mount('https://', HTTPAdapter(max_retries=max_retries))
 
     try:
         response = s.get(url, timeout=timeout)
