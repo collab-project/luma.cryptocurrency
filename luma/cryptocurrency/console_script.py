@@ -5,12 +5,10 @@
 import sys
 import logging
 
-import luma.core.error
+from luma.core import error, cmdline
 
 from .ticker import run
 from .endpoint import create_endpoint
-
-from .cmdline import create_parser, load_config, create_device, display_types
 
 
 def main(actual_args=None):
@@ -30,7 +28,7 @@ def main(actual_args=None):
     logging.getLogger("requests").setLevel(logging.ERROR)
 
     # parser
-    device_parser = create_parser()
+    device_parser = cmdline.create_parser(description='luma.cryptocurrency')
     subparsers = device_parser.add_subparsers()
 
     # override defaults
@@ -51,7 +49,7 @@ def main(actual_args=None):
     args = device_parser.parse_args(actual_args)
     if args.config:
         # load config from file
-        config = load_config(args.config)
+        config = cmdline.load_config(args.config)
         args = device_parser.parse_args(config + actual_args)
 
     # create endpoint
@@ -59,8 +57,9 @@ def main(actual_args=None):
 
     # create device
     try:
-        device = create_device(args, display_types)
-    except luma.core.error.Error as e:
+        display_types = cmdline.get_display_types()
+        device = cmdline.create_device(args, display_types)
+    except error.Error as e:
         device_parser.error(e)
 
     run(device, ep)

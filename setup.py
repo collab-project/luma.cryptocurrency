@@ -35,8 +35,8 @@ setup(
         ]
     },
     install_requires=[
-        'luma.oled',
-        'requests-cache',
+        'luma.core>=0.7.0',
+        'requests',
         'dateutils'
     ],
     extras_require={

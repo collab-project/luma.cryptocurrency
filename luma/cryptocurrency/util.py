@@ -8,7 +8,6 @@ import os.path
 from PIL import ImageFont
 
 import requests
-import requests_cache
 from requests.adapters import HTTPAdapter
 
 from requests.packages.urllib3.util.retry import Retry
@@ -26,25 +25,24 @@ def get_reference_path(path):
     ))
 
 
-def request_json(url, timeout=4):
+def request_json(url, timeout=4, retries=5):
     """
     :param url:
     :type url:
     """
-    with requests_cache.disabled():
-        s = requests.Session()
-        retries = Retry(total=5,
-            backoff_factor=0.1,
-            status_forcelist=[500, 502, 503, 504])
+    s = requests.Session()
+    max_retries = Retry(total=retries,
+        backoff_factor=0.1,
+        status_forcelist=[500, 502, 503, 504])
 
-        s.mount('https://', HTTPAdapter(max_retries=retries))
+    s.mount('https://', HTTPAdapter(max_retries=max_retries))
 
-        try:
-            response = s.get(url, timeout=timeout)
-            return response.json()
+    try:
+        response = s.get(url, timeout=timeout)
+        return response.json()
 
-        except requests.exceptions.ConnectionError:
-            raise
+    except requests.exceptions.ConnectionError:
+        raise
 
 
 def load_json_file(path):
